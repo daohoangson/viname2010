@@ -1,0 +1,21 @@
+#searcher input {
+	font-size: 35px;
+}
+.search_box {
+	font-size: 35px;
+	width: 600px;
+}
+#results li {
+	list-style: none;
+	display: table;
+	table-layout: fixed;
+	width: 100%;
+}
+.search_header {
+	font-weight: bold;
+}
+.search_result div {
+	display: table-cell;
+	vertical-align: middle;
+	width: auto;
+}
