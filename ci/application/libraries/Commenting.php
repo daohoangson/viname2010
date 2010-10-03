@@ -46,7 +46,7 @@ class Commenting {
 		
 		$commentForm = '';
 		if ($this->ci->authentication->isLoggedIn()) {
-			$commentForm = $this->ci->load->view('comment/commentForm',array(
+			$commentForm = $this->ci->load->view('comment/comment_form',array(
 				'post_id' => $post_id,
 				'comment' => $comment,
 			),true);
