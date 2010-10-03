@@ -3,9 +3,20 @@
 require(dirname(__FILE__) . '/shared.php');
 
 class Name extends Shared {
-	function view($name) {
-		$this->load->model('Namemodel');
-		var_dump($this->Namemodel->get($name));
+	function view($hash) {
+		$full_name = $this->Indexed->utilHash($hash,false);
+		$indexed = $this->Indexed->get(array('full_name' => $full_name));
+		if (count($indexed) == 0) {
+			$this->load->view('common/error',array('message' => $this->lang->line('no_result_found')));
+		} else {
+			$this->load->library('commenting');
+			list($comments,$commentForm) = $this->commenting->getComments('name',$full_name,true);
+			$this->load->view('name/view',array(
+				'indexed' => $indexed,
+				'comments' => $comments,
+				'commentForm' => $commentForm,
+			));
+		}
 	}
 }
 

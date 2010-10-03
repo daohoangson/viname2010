@@ -128,5 +128,36 @@
 	
 	$.fn.suggestion = function(options) {
 		this.each(function() {new Suggestion(this,options);});
+		return this;
 	};
+	
+	$.fn.submitAjax = function(options) {
+		var $target = $('#' + options.target);
+		var $loading = $('#' + options.loading);
+		this.each(function() {
+			var $form = $(this);
+			var lastData = '';
+			$form.submit(function() {
+				var fdata = $form.serialize();
+				if (fdata != lastData) {
+					$loading.css('display','');
+					$.ajax({
+						'url': $form.attr('action'),
+						'type': $form.attr('method'),
+						'data': fdata + '&ajax=1',
+						'dataType': 'html',
+						'success': function(data) {
+							if ($form.serialize() == fdata) {
+								$loading.css('display','none');
+								$target.html(data);
+							}
+						},
+					});
+					lastData = fdata;
+					return false;
+				}
+			});
+		});
+		return this;
+	}
 })(jQuery);	

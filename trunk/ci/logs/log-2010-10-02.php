@@ -1,35 +1,14 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
 
-ERROR - 2010-10-02 01:50:53 --> Query error: Table 'viname.index_family_names' doesn't exist
-ERROR - 2010-10-02 01:51:19 --> Query error: Table 'viname.top_family_names' doesn't exist
-ERROR - 2010-10-02 01:51:19 --> Query error: Table 'viname.top_names' doesn't exist
-ERROR - 2010-10-02 02:04:46 --> Query error: Table 'viname.top_family_names' doesn't exist
-ERROR - 2010-10-02 02:04:46 --> Query error: Table 'viname.top_names' doesn't exist
-ERROR - 2010-10-02 02:06:28 --> Query error: Table 'viname.top_family_names' doesn't exist
-ERROR - 2010-10-02 02:06:28 --> Query error: Table 'viname.top_names' doesn't exist
-ERROR - 2010-10-02 02:34:01 --> 404 Page Not Found --> search/lookup
-ERROR - 2010-10-02 02:34:06 --> Query error: Table 'viname.top_family_names' doesn't exist
-ERROR - 2010-10-02 02:34:06 --> Query error: Table 'viname.top_names' doesn't exist
-ERROR - 2010-10-02 02:34:25 --> Severity: Notice  --> Undefined variable: fn E:\www\binhtd\ci\application\controllers\search.php 84
-ERROR - 2010-10-02 02:34:25 --> Severity: Notice  --> Undefined variable: fn E:\www\binhtd\ci\application\controllers\search.php 84
-ERROR - 2010-10-02 02:34:25 --> Severity: Notice  --> Undefined variable: fn E:\www\binhtd\ci\application\controllers\search.php 84
-ERROR - 2010-10-02 02:40:18 --> Query error: Table 'viname.top_family_names' doesn't exist
-ERROR - 2010-10-02 02:40:18 --> Query error: Table 'viname.top_names' doesn't exist
-ERROR - 2010-10-02 03:21:07 --> Query error: Table 'viname.top_names' doesn't exist
-ERROR - 2010-10-02 03:21:07 --> Query error: Table 'viname.top_family_names' doesn't exist
-ERROR - 2010-10-02 03:21:21 --> Severity: Notice  --> Undefined property: stdClass::$dob E:\www\binhtd\ci\application\controllers\search.php 109
-ERROR - 2010-10-02 03:21:21 --> Severity: Notice  --> Undefined property: stdClass::$dob E:\www\binhtd\ci\application\controllers\search.php 109
-ERROR - 2010-10-02 03:21:21 --> Severity: Notice  --> Undefined property: stdClass::$dob E:\www\binhtd\ci\application\controllers\search.php 109
-ERROR - 2010-10-02 03:21:21 --> Severity: Notice  --> Undefined property: stdClass::$dob E:\www\binhtd\ci\application\controllers\search.php 109
-ERROR - 2010-10-02 03:21:21 --> Severity: Notice  --> Undefined property: stdClass::$dob E:\www\binhtd\ci\application\controllers\search.php 109
-ERROR - 2010-10-02 03:21:21 --> Severity: Notice  --> Undefined property: stdClass::$dob E:\www\binhtd\ci\application\controllers\search.php 109
-ERROR - 2010-10-02 03:21:21 --> Severity: Notice  --> Undefined property: stdClass::$dob E:\www\binhtd\ci\application\controllers\search.php 109
-ERROR - 2010-10-02 03:21:21 --> Severity: Notice  --> Undefined property: stdClass::$dob E:\www\binhtd\ci\application\controllers\search.php 109
-ERROR - 2010-10-02 05:00:22 --> Query error: Table 'viname.top_family_names' doesn't exist
-ERROR - 2010-10-02 05:00:22 --> Query error: Table 'viname.top_names' doesn't exist
-ERROR - 2010-10-02 05:07:34 --> Query error: Table 'viname.top_names' doesn't exist
-ERROR - 2010-10-02 05:07:34 --> Query error: Table 'viname.top_family_names' doesn't exist
-ERROR - 2010-10-02 05:07:53 --> Query error: Table 'viname.top_names' doesn't exist
-ERROR - 2010-10-02 05:07:53 --> Query error: Table 'viname.top_family_names' doesn't exist
-ERROR - 2010-10-02 05:11:21 --> 404 Page Not Found --> api/list
-ERROR - 2010-10-02 05:13:02 --> 404 Page Not Found --> api/list
+ERROR - 2010-10-02 20:35:00 --> Query error: Field 'user_data' doesn't have a default value
+ERROR - 2010-10-02 20:36:48 --> Query error: Field 'user_data' doesn't have a default value
+ERROR - 2010-10-02 20:37:40 --> Query error: Field 'user_data' doesn't have a default value
+ERROR - 2010-10-02 20:38:13 --> Query error: Field 'user_data' doesn't have a default value
+ERROR - 2010-10-02 21:34:50 --> Severity: Notice  --> Undefined property: Auth::$User E:\www\binhtd\ci\application\libraries\Authentication.php 62
+ERROR - 2010-10-02 21:36:37 --> Severity: Notice  --> Undefined property: Auth::$User E:\www\binhtd\ci\application\libraries\Authentication.php 15
+ERROR - 2010-10-02 21:37:23 --> Severity: Notice  --> Trying to get property of non-object E:\www\binhtd\ci\application\libraries\Authentication.php 63
+ERROR - 2010-10-02 21:37:23 --> Severity: Notice  --> Trying to get property of non-object E:\www\binhtd\ci\application\libraries\Authentication.php 63
+ERROR - 2010-10-02 23:09:16 --> Query error: Table 'viname.user' doesn't exist
+ERROR - 2010-10-02 23:17:17 --> Severity: Warning  --> mysql_pconnect() [<a href='function.mysql-pconnect'>function.mysql-pconnect</a>]: MySQL server has gone away E:\www\binhtd\ci\database\drivers\mysql\mysql_driver.php 88
+ERROR - 2010-10-02 23:17:18 --> Severity: Warning  --> mysql_pconnect() [<a href='function.mysql-pconnect'>function.mysql-pconnect</a>]: MySQL server has gone away E:\www\binhtd\ci\database\drivers\mysql\mysql_driver.php 88
+ERROR - 2010-10-02 23:18:39 --> Severity: Notice  --> Undefined property: Authentication::$session E:\www\binhtd\ci\application\libraries\Authentication.php 21

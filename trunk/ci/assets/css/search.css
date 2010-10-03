@@ -5,6 +5,9 @@
 	font-size: 35px;
 	width: 600px;
 }
+#resultsLoading {
+	text-align: center;
+}
 #results li {
 	list-style: none;
 	display: table;
