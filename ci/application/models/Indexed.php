@@ -1,12 +1,18 @@
 <?php
 
 class Indexed extends Model {
-	function utilEscape($text) {
-		return $this->unicoder->asciiAccent($text);
-	}
+	var $utilHashCharacters	= "abcdefghijklmnopqrstuvwxyz '`?~.^(*-";
+	var $utilHashSymbols	= "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
-	function utilEscapeArray($arrayOfText) {
-		return array_map(array($this,'utilEscape'),$arrayOfText);
+	function get($conditions,$limit = null) {
+		foreach ($conditions as $column => $value) {
+			$this->db->where($column,$value);
+		}
+		if ($limit !== null) {
+			$this->db->limit($limit);
+		}
+		$query = $this->db->get('index');
+		return $query->result();
 	}
 	
 	function getStats() {
@@ -87,6 +93,37 @@ class Indexed extends Model {
 			if (count($result) > $limit) break;
 		}
 		return $result;
+	}
+	
+	function utilEscape($text) {
+		return $this->unicoder->asciiAccent($text);
+	}
+	
+	function utilEscapeArray($arrayOfText) {
+		return array_map(array($this,'utilEscape'),$arrayOfText);
+	}
+	
+	function utilHash($text, $encoding = true) {
+		$hash = '';
+		
+		// prepare
+		if (empty($this->utilHashCharactersArray)) {
+			$this->utilHashCharactersArray = preg_split('//',$this->utilHashCharacters);
+			$this->utilHashSymbolsArray = preg_split('//',$this->utilHashSymbols);
+		}
+		// prepare part 2 (encoding or decoding?)
+		if ($encoding) {
+			$text = $this->utilEscape($text);
+			$map = array_combine($this->utilHashCharactersArray,$this->utilHashSymbolsArray);
+		} else {
+			$map = array_combine($this->utilHashSymbolsArray,$this->utilHashCharactersArray);
+		}
+		// work
+		$len = strlen($text);
+		for ($i = 0; $i < $len; $i++) {
+			$hash .= isset($map[$text[$i]])?$map[$text[$i]]:'';
+		}
+		return $hash;
 	}
 }
 

@@ -9,6 +9,10 @@ class Api extends Controller {
 		$this->_output($this->Indexed->getList($type,$limit,true));
 	}
 	
+	function getStats() {
+		$this->_output($this->Indexed->getStats());
+	}
+	
 	/**
 	 * Outputs data in the specified output format.
 	 */
@@ -23,6 +27,9 @@ class Api extends Controller {
 				break;
 			case 'xml':
 				echo $this->load->view('layouts/xml',array('data' => $output),true);
+				break;
+			case 'serialize':
+				echo serialize($output);
 				break;
 		}
 		exit; // stop executing and flush output
@@ -58,6 +65,18 @@ class Api extends Controller {
 			call_user_func_array(array($this,$args[0]),array_slice($args,1));
 		}
 		return; //make sure it stops
+	}
+	
+	/**
+	 * Router for serialize requests
+	 */
+	function serialize() {
+		$args = func_get_args();
+		if (count($args) > 0) {
+			$this->outputFormat = 'serialize';
+			call_user_func_array(array($this,$args[0]),array_slice($args,1));
+		}
+		return; // make sure it stops
 	}
 }
 

@@ -1,5 +1,5 @@
 <div id="searcher">
-	<form action="<?php echo site_url('search/submit') ?>" method="POST">
+	<form id="searchForm" action="<?php echo site_url('search/submit') ?>" method="POST">
 		<table cellspacing="5" cellpadding="0" align="center">
 			<tbody>
 				<tr>
@@ -14,6 +14,8 @@
 		</table>	
 	</form>
 </div>
+<div id="resultsLoading" style="display: none"><img src="assets/img/loading.gif" alt="Loading" class="img_center"/></div>
+<div id="resultsContainer">&nbsp;</div>
 <?php 
 	Shared::_jQuery();
 	Shared::_js_static('assets/js/search.js');
@@ -23,6 +25,8 @@
 jQuery(document).ready(function(){
 	jQuery('#q').suggestion({'words': [
 		'<?php echo site_url('api/json/getList/family_names') ?>'
-		,'<?php echo site_url('api/json/getList/names') ?>']});
+		,'<?php echo site_url('api/json/getList/names') ?>']})
+		.focus();
+	jQuery('#searchForm').submitAjax({'target': 'resultsContainer', 'loading': 'resultsLoading'});
 });
 </script>

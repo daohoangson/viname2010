@@ -67,7 +67,7 @@ class Unicoder {
 		return implode(' ',$words);
 	}
 	
-	public static function strtolower($text, $stripNonCharacters = false) {
+	public static function strtolower($text, $reverse = false) {
 		static $map = array(
 			// lower case (67)
 			'à','á','ạ','ả','ã','â','ầ','ấ','ậ','ẩ','ẫ','ă','ằ','ắ','ặ','ẳ','ẵ',
@@ -100,16 +100,31 @@ class Unicoder {
 			}
 		}
 		
-		$text = str_replace($upper,$lower,$text);
-		
-		if ($stripNonCharacters) {
-			if (empty($regex)) {
-				$regex = '/[^' . implode(array_merge($lower,$upper)) . ' ]/';
-			}
-			$text = preg_replace($regex,' ',$text);
-			$text = trim(preg_replace('/\s+/',' ',$text));
+		if (empty($reverse)) {
+			$text = str_replace($upper,$lower,$text);
+		} else {
+			$text = str_replace($lower,$upper,$text);
 		}
 		
 		return $text;
+	}
+	
+	public static function strtoupper($text) {
+		return self::strtolower($text,true);
+	}
+	
+	public static function ucwords($text) {
+		$words = explode(' ',self::strtolower($text));
+		for ($i=0; $i < count($words); $i++) { 
+			for ($j=0; $j < strlen($words[$i]); $j++) { 
+				$sample = substr($words[$i],0,$j + 1);
+				$changed = self::strtoupper($sample);
+				if ($changed != $sample) {
+					$words[$i] = $changed . substr($words[$i],$j + 1);
+					break;
+				}
+			}
+		}
+		return implode(' ',$words);
 	}
 }
