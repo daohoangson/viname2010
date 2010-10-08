@@ -1,3 +1,4 @@
+<h2><?php echo lang('auth_login') ?></h2>
 <?php if ($this->authentication->flash()): ?>
 <div class="message">
 	<?php echo $this->authentication->flash() ?>
@@ -7,6 +8,7 @@
 <?php $this->load->view('common/error',array('message' => $errors)) ?>
 <?php endif ?>
 <form action="<?php echo site_url('/auth/login') ?>" method="POST" id="loginForm">
+	<input type="hidden" name="login_form_referrer" value="<?php echo $login_form_referrer ?>"/>
 	<label for="loginInput"><?php echo lang('auth_login_noun') ?></label>
 	<input id="loginInput" name="login" type="text" value="<?php echo $login ?>"/>
 	<label for="passwordInput"><?php echo lang('auth_password') ?></label>
@@ -17,3 +19,8 @@
 	</label>
 	<input type="submit" value="<?php echo lang('auth_login') ?>"/>
 </form>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery('#loginInput').focus();
+	});
+</script>

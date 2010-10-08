@@ -316,7 +316,7 @@ class Search extends Shared {
 	
 	function _readFilter($filter,$raw = false) {
 		$tmp = array();
-		$parts = explode(' ',$raw?$this->_base64_decode($filter):$filter);
+		$parts = explode(' ',$raw?$this->unicoder->base64_decode($filter):$filter);
 		
 		if (count($parts) == 3) {
 			// name filter
@@ -337,23 +337,9 @@ class Search extends Shared {
 			$tmp['type'] = 'popularity';
 			$tmp['popularity'] = $parts[0];
 		}
-		$tmp['key'] = $raw?$filter:$this->_base64_encode($filter);
+		$tmp['key'] = $raw?$filter:$this->unicoder->base64_encode($filter);
 		
 		return $tmp;
-	}
-	
-	function _base64_encode($text,$encoding = true) {
-		$search = array('+','/','='); // unsafe characters
-		$replace = array('.',':','_'); // somewhat safer ones
-		if ($encoding) {
-			return str_replace($search,$replace,base64_encode($text));
-		} else {
-			return base64_decode(str_replace($replace,$search,$text));
-		}
-	}
-	
-	function _base64_decode($text) {
-		return $this->_base64_encode($text,false);
 	}
 	
 	function _resultSort($a,$b) {

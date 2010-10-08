@@ -16,17 +16,16 @@
 </div>
 <div id="resultsLoading" style="display: none"><img src="assets/img/loading.gif" alt="Loading" class="img_center"/></div>
 <div id="resultsContainer">&nbsp;</div>
-<?php 
-	Shared::_jQuery();
+<?php
 	Shared::_js_static('assets/js/search.js');
 	Shared::_css_static('assets/css/search.css');
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function(){
-	jQuery('#q').suggestion({'words': [
-		'<?php echo site_url('api/json/getList/family_names') ?>'
-		,'<?php echo site_url('api/json/getList/names') ?>']})
-		.focus();
-	jQuery('#searchForm').submitAjax({'target': 'resultsContainer', 'loading': 'resultsLoading'});
-});
+	jQuery(document).ready(function(){
+		jQuery('#q').suggestion({'words': [
+			'<?php echo site_url('api/json/getList/family_names') ?>'
+			,'<?php echo site_url('api/json/getList/names') ?>']})
+			.focus();
+		jQuery('#searchForm').submitAjax({'target': '#resultsContainer', 'loading': '#resultsLoading'});
+	});
 </script>

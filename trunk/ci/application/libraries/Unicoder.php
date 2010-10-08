@@ -16,7 +16,8 @@ class Unicoder {
 			'O' => array('Ò','Ó','Ọ','Ỏ','Õ','Ô','Ồ','Ố','Ộ','Ổ','Ỗ','Ơ','Ờ','Ớ','Ợ','Ở','Ỡ'),
 			'U' => array('Ù','Ú','Ụ','Ủ','Ũ','Ư','Ừ','Ứ','Ự','Ử','Ữ'),
 			'Y' => array('Ỳ','Ý','Ỵ','Ỷ','Ỹ'),
-			'D' => 'Đ'
+			'D' => 'Đ',
+			'' => array('̉','̣','̃','̀','́'),
 		);
 		$result = $text;
 		foreach ($map as $char => $chars) {
@@ -44,6 +45,7 @@ class Unicoder {
 			'ư' => 'u*', 'ừ' => 'u*`', 'ứ' => "u*'", 'ự' => 'u*.', 'ử' => 'u*?', 'ữ' => 'u*~',
 			'ỳ' => 'y`', 'ý' => "y'", 'ỵ' => 'y.', 'ỷ' => 'y?', 'ỹ' => 'y~',
 			'đ' => 'd-',
+			'̉' => '?', '̣' => '.','̃' => '~','̀' => '`','́' => "'",
 		);
 		static $keys = array();
 		if (empty($keys)) $keys = array_keys($map);
@@ -126,5 +128,62 @@ class Unicoder {
 			}
 		}
 		return implode(' ',$words);
+	}
+	
+	public static function titleScore($title) {
+		static $scores = array(
+			array(
+				'pho bo truong' => 9000,
+				'bo truong' => 10000,
+			),
+			array(
+				'pho chu tich' => 1400,
+				'chu tich' => 1500,
+			),
+			array(
+				'tong giam doc' => 1300,
+				'tong gd' => 1300,
+				'pho giam doc' => 900,
+				'giam doc' => 1000,
+				'pho gd' => 900,
+				'gd' => 1000,
+			),
+			array(
+				'truong phong' => 500,
+				'pho phong' => 400,
+				'truong ban' => 400,
+				'pho ban' => 350,
+			),
+		);
+		$title = strtolower(self::removeAccent($title));
+		$parts = explode(',',$title);
+		$score = 0;
+		$score_parts = array();
+		foreach ($parts as $part) {
+			foreach ($scores as $scores_group) {
+				foreach ($scores_group as $match => $score_plus) {
+					if (strpos($title,$match) !== false) {
+						$score += $score_plus;
+						$score_parts[] = $match;
+						break; // stop this scores_group
+					}
+				}
+			}
+		}
+		return array($score,implode(',',$score_parts));
+	}
+	
+	public static function base64_encode($text,$encoding = true) {
+		static $search = array('+','/','='); // unsafe characters
+		static $replace = array('.',':','_'); // somewhat safer ones
+		if ($encoding) {
+			return str_replace($search,$replace,base64_encode($text));
+		} else {
+			return base64_decode(str_replace($replace,$search,$text));
+		}
+	}
+	
+	public static function base64_decode($text) {
+		return self::base64_encode($text,false);
 	}
 }

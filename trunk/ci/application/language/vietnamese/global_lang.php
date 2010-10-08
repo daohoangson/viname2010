@@ -21,6 +21,9 @@ $lang['popularity_low'] = 'Ít gặp';
 $lang['popularity_rare'] = 'Hiếm gặp';
 $lang['popularity_xrare'] = 'Độc';
 
+/* error/status */
+$lang['updated'] = 'Đã cập nhật';
+
 /* paginator */
 $lang['viewing_page_x_of_y'] = 'Đang xem trang %1$d trên tổng số %2$d';
 $lang['first_page'] = 'Trang đầu';
