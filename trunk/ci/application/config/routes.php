@@ -43,10 +43,12 @@
 $route['default_controller'] = "search";
 $route['scaffolding_trigger'] = "";
 
+$route['search/(.*)'] = 'search/route/$1';
 $route['register'] = 'auth/register';
 $route['login'] = 'auth/login';
 $route['logout'] = 'auth/logout';
-$route['admin/([a-z]+)/(.*)'] = "$1/admin_$2";
+
+$route['admin/([a-z]+)/(.*)'] = '$1/admin_$2'; // admin routing
 
 /* End of file routes.php */
 /* Location: ./system/application/config/routes.php */

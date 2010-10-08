@@ -19,6 +19,7 @@ class Paginator {
 					'page' => $page,
 					'pages' => $pages,
 					'perpage' => $perpage,
+					'originalLink' => $this->truncateUrl(current_url()),
 					'link' => $this->truncateUrl(current_url()) . '/page-%1$d' . ($perpage != $perpage_default?'perpage-%2$d':''),
 				),true);
 			} else {

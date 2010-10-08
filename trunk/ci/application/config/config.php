@@ -11,8 +11,8 @@
 |	http://example.com/
 |
 */
-//$config['base_url']	= "http://localhost/binhtd/ci/";
-$config['base_url']	= "http://mrpaint.dyndns.info/binhtd/ci/";
+$config['base_url']	= "http://localhost/binhtd/ci/";
+//$config['base_url']	= "http://mrpaint.dyndns.info/binhtd/ci/";
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +25,7 @@ $config['base_url']	= "http://mrpaint.dyndns.info/binhtd/ci/";
 |
 */
 $config['index_page'] = "index.php";
+$config['index_page'] = '';
 
 /*
 |--------------------------------------------------------------------------

@@ -5,7 +5,7 @@
 			<span class="current"><?php echo $i ?></span>
 		<?php else: ?>
 			<?php if ($i == 1): ?>
-				<span class="first">[<a href="<?php echo sprintf($link,1,$perpage) ?>"><?php echo lang('first_page') ?></a>]</span>
+				<span class="first">[<a href="<?php echo $originalLink ?>"><?php echo lang('first_page') ?></a>]</span>
 			<?php else: ?>
 				<?php if ($i == $pages): ?>
 					<span class="last">[<a href="<?php echo sprintf($link,$pages,$perpage) ?>"><?php echo lang('last_page') ?></a>]</span>
