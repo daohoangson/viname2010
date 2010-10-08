@@ -7,7 +7,7 @@ class Layout {
 		$CI =& get_instance();
 		$output = $CI->output->get_output();
 
-		if (isset($CI->layout) AND !$this->_isAjaxRequest()) {
+		if (isset($CI->layout) AND !$CI->_isAjax()) {
 			// process javascript/css stuff
 			$head = '';
 			if (!empty($CI->js)) {
@@ -39,11 +39,6 @@ class Layout {
 		}
 		
 		$OUT->_display($view);
-	}
-	
-	function _isAjaxRequest() {
-		if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) AND strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') return true;
-		return false;
 	}
 }
 

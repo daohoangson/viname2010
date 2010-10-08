@@ -1,6 +1,6 @@
 <div id="searcher">
 	<form id="searchForm" action="<?php echo site_url('search/submit') ?>" method="POST">
-		<table cellspacing="5" cellpadding="0" align="center">
+		<table cellspacing="5" cellpadding="0">
 			<tbody>
 				<tr>
 					<td>

@@ -10,6 +10,7 @@ class Shared extends Controller {
 		
 		$this->_jQuery();
 		$this->_css('assets/css/global.css');
+		$this->_css('assets/css/bp.css');
 		
 		$this->load->library('authentication');
 	}

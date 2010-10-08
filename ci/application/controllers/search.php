@@ -5,13 +5,19 @@ require_once(dirname(__FILE__) . '/shared.php');
 class Search extends Shared {
 	var $cacheResult = true;
 	
+	function route() {
+		$args = func_get_args();
+		if (count($args) == 0) {
+			$this->index();
+		} else if (method_exists($this,$args[0])) {
+			call_user_func_array(array($this,$args[0]),array_slice($args,1));
+		} else {
+			call_user_func_array(array($this,'view'),$args);
+		}
+	}
+	
 	function index() {		
 		$this->load->view('search/index');
-		
-		
-		$s1 = 'd-ao` hoang` so*n';
-		$s2 = $s1;
-		//var_dump(explode(' ',$s1),explode(' ',$s2),$this->_calculateRelevant($s1,$s2));exit;
 	}
 	
 	function submit() {
@@ -84,7 +90,7 @@ class Search extends Shared {
 		} else {
 			$q_safe = '';
 		}
-		$this->_redirect('/search/view/' . $id . '/' . $q_safe);
+		$this->_redirect('/search/' . $id . '/' . $q_safe);
 	}
 	
 	function _search2($words,$words_ascii,$family_names_ascii = array()) {
@@ -235,8 +241,14 @@ class Search extends Shared {
 			foreach ($data->filters as $filter => $count) {
 				$tmp = $this->_readFilter($filter);
 				$tmp['count'] = $count;
-				$filters['name'][$tmp['key']] = $tmp;
+				if ($count > 0) {
+					$filters['name'][$tmp['key']] = $tmp;
+				}
 			}
+			if (!empty($filters['name']) AND count($filters['name']) == 1) {
+				$filters['name'] = array(); // only 1 filter, no reason to display
+			}
+			
 			// process active filter (from url)
 			if (!empty($args['filter'])) {
 				if (!is_array($args['filter'])) {
@@ -276,23 +288,22 @@ class Search extends Shared {
 			// add real time filters
 			if (!isset($active_filters['gender'])) {
 				$resultcount = count($result);
-				$genders = array();
-				for ($i=0; $i < $resultcount; $i++) { 
-					if (empty($genders[$result[$i]->gender])) {
-						$genders[$result[$i]->gender] = 1;
+				$genders = array(0,0);
+				foreach ($result as $record) {
+					if ($record->gender == -1) {
+						$genders[0]++;
+						$genders[1]++;
 					} else {
-						$genders[$result[$i]->gender]++;
+						$genders[$record->gender]++;
 					}
 				}
-				if (count($genders) > 1) {
-					// find more than 1 gender
-					for ($j=0; $j < 2; $j++) { 
-						if (!empty($genders[$j])) {
-							$filter = "$j";
-							$tmp = $this->_readFilter($filter);
-							$tmp['count'] = $genders[$j] + @$genders[-1];
-							$filters['gender'][$tmp['key']] = $tmp;
-						}
+				if ($genders[0] > 0 AND $genders[1] > 0) {
+					// if found more than 1 gender
+					foreach ($genders as $gender => $count) {
+						$filter = "$gender";
+						$tmp = $this->_readFilter($filter);
+						$tmp['count'] = $count;
+						$filters['gender'][$tmp['key']] = $tmp;
 					}
 				}
 			} else {
