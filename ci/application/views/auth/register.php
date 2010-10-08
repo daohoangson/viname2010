@@ -1,3 +1,4 @@
+<h2><?php echo lang('auth_register') ?></h2>
 <?php if (!empty($errors)): ?>
 <?php $this->load->view('common/error',array('message' => $errors)) ?>
 <?php endif ?>

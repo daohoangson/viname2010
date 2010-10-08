@@ -8,7 +8,6 @@ class Auth extends Shared {
 	}
 	
 	function login() {
-		$this->_referrer('current');
 		if ($this->authentication->isLoggedIn()) {
 			$this->_redirect('referrer',true);
 		} else {
@@ -33,7 +32,8 @@ class Auth extends Shared {
 			$this->load->view('auth/login',array(
 				'login' => $login,
 				'remember' => $remember,
-				'errors' => $errors
+				'errors' => $errors,
+				'login_form_referrer' => $this->_site_url('referrer'),
 			));
 		}
 	}

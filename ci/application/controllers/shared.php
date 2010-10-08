@@ -8,6 +8,7 @@ class Shared extends Controller {
 	function __construct() {
 		parent::__construct();
 		
+		$this->_jQuery();
 		$this->_css('assets/css/global.css');
 		
 		$this->load->library('authentication');
@@ -55,14 +56,16 @@ class Shared extends Controller {
 		if (!empty($referrer)) $this->_referrer($referrer);
 		$message = $this->_flash();
 		if (!empty($message)) $this->_flash($message);
-		redirect($this->_site_url($target));
+		$url = $this->_site_url($target);
+		redirect($url);
 	}
 	
-	function _site_url($target) {
+	function _site_url($target,$prevent_loop = true) {
 		if ($target == 'referrer') {
 			$referrer = $this->_referrer();
+			if (empty($referrer)) $referrer = $this->input->post('login_form_referrer');
 			if (empty($referrer)) $referrer = $this->input->server('HTTP_REFERER');
-			if ($referrer == current_url()) {
+			if ($prevent_loop AND $referrer == current_url()) {
 				$referrer = site_url('');
 			}
 			return $referrer;
@@ -133,6 +136,23 @@ class Shared extends Controller {
 	
 	static function _css_static($css, $type = 'link') {
 		get_instance()->_css($css,$type);
+	}
+}
+
+class Admincp extends Shared {
+	var $layout = 'admincp';
+	
+	function __construct() {
+		parent::__construct();
+		
+		$segments = $this->uri->segment_array();
+		if ($segments[1] != 'admin') die('Nothing here. Move on.');
+		
+		if (!$this->authentication->isLoggedIn()) {
+			// request authentication
+			$this->_referrer(current_url());
+			$this->_redirect('/login');
+		}
 	}
 }
 
