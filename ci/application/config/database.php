@@ -53,3 +53,8 @@ $db['default']['dbcollat'] = "utf8_general_ci";
 
 /* End of file database.php */
 /* Location: ./system/application/config/database.php */
+
+$overwrite_path = dirname(__FILE__) . '/database_overwrite.php';
+if (file_exists($overwrite_path)) {
+	require($overwrite_path);
+}
