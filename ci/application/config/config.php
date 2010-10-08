@@ -329,3 +329,8 @@ $config['proxy_ips'] = '';
 
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */
+
+$overwrite_path = dirname(__FILE__) . '/config_overwrite.php';
+if (file_exists($overwrite_path)) {
+	require($overwrite_path);
+}
