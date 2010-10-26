@@ -9,6 +9,8 @@
 		__construct: function(de,options) {
 			this.words = [];
 			this.separators = ' ';
+			this.placeHolder = '';
+			if (typeof options.placeHolder != 'undefined') this.placeHolder = options.placeHolder;
 			
 			if (typeof options != 'undefined') {
 				if (typeof options.words == 'object') {
@@ -24,29 +26,24 @@
 			// target input
 			this.de = de;
 			this.$ = $(de);
-			this.$
-				.css('position','relative')
-				.css('background','transparent')
-				.css('z-index',3)
-				.keydown($.context(this,'keyboarding'))
-				.keyup($.context(this,'keyboarding'));
 			// target parent
 			this.$.parent().css('position','relative');
-			// shadown container
+			// shadow container
 			var container = document.createElement('div');
 			$(container)
 				.css('background','transparent')
 				.css('position','relative');
 			// shadow input
-			var offset = this.$.offset();
-			this.shadow = document.createElement(de.tagName);
+			/*this.shadow = document.createElement(de.tagName);
 			this.shadow.type = de.type;
 			this.shadow.tabIndex = -1;
+			this.shadow.readOnly = true;*/
+			this.shadow = this.$.clone().get(0);
+			this.shadow.tabIndex = -1;
 			this.shadow.readOnly = true;
-			this.$s = $(this.shadow);
+			this.$s = $(this.shadow).val(this.placeHolder);
 			$(container).append(this.shadow).insertBefore(de);
-			this.$s.addClass(this.$.attr('class'))
-				.css('position','absolute')
+			this.$s.css('position','absolute')
 				.css('border-color','transparent')
 				.css('color','#AAA')
 				.css('z-index',1);
@@ -65,6 +62,12 @@
 			for (var i = 0; i < cssfontproperties.length; i++) {
 				this.$d.css(cssfontproperties[i],this.$.css(cssfontproperties[i]));
 			}
+			// primary input
+			this.$.css('position','relative')
+				.css('background','transparent')
+				.css('z-index',3)
+				.keydown($.context(this,'keyboarding'))
+				.keyup($.context(this,'keyboarding'));
 		}
 		,loadWords: function(data) {
 			if (typeof data.response == 'object') {
@@ -110,8 +113,10 @@
 				this.$d.html(suggestion);
 				if (this.$d.width() > this.$s.width()) {
 					this.$s.val('');
-				} else {
+				} else if (suggestion.length > 0) {
 					this.$s.val(suggestion);
+				} else {
+					this.$s.val(this.placeHolder);
 				}
 			} else if (evt.type == 'keydown') {
 				if (evt.keyCode == 39 /* right */ || evt.keyCode == 9 /* tab */) {

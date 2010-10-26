@@ -35,7 +35,11 @@ class Layout {
 				'message' => $CI->_flash(),
 			),true);
 		} else {
-			$view = $output;
+			$view = json_encode(array(
+				'url' => current_url(),
+				'message' => $CI->_flash(),
+				'html' => $output,
+			));
 		}
 		
 		$OUT->_display($view);

@@ -1,25 +1,105 @@
 body {
 	font-family: Arial;
+	background-color: #f7fbe0;
+}
+.bordered, .form {
+	border-radius: 0.8em;
+	-moz-border-radius: 0.8em;
+	padding: 1em;
+	border: 1px solid #a1bd1d !important;
 }
 input {
 	font-family: Arial;
+	border-radius: 0.3em;
+	-moz-border-radius: 0.3em;
+	padding: 0.2em;
+	border: 1px solid #a1bd1d !important;
+}
+.button {
+	background-color: #FFF;
+	color: #000;
+}
+.muted {
+	color: #646851;
 }
 /* primary elements */
 #header {
 	text-align: right;
-	border-bottom: 3px solid #000;
-	padding-bottom: 5px;
-	margin-bottom: 5px;
+	height: 25px;
+	margin: 5px 10px;
 }
+	#quickSearcher {
+		position: absolute;
+		top: 0px;
+	}
+	#quickSearcher .quickSearchBox {
+		width: 250px;
+	}
+	#header .links {
+		height: 25px;
+	}
 #footer {
 	text-align: center;
-	font-size: 0.7em;
-	border-top: 3px solid #000;
-	padding-top: 5px;
-	margin-top: 5px;
+	margin-top: 15px;
 }
+	.links a {
+		border-left: 1px solid #883c0a;
+		color: #883c0a;
+		padding: 0 5px;
+	}
+	.links a:first-child {
+		border-left: 0;
+	}
+#loginForm {
+}
+	#loginForm input {
+		margin-top: 0;
+	}
+#registerForm {
+}
+	#registerForm input {
+		margin-top: 0;
+	}
 /* paginator */
 .paginator {
 	text-align: right;
 	font-style: italic;
+	margin: 10px 0;
+}
+/* right block */
+.rightBlock {
+	
+}
+	.rightBlock .blockHeader {
+		background-color: #a1bd1d;
+		color: #FFF;
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+		-moz-border-radius-topleft: 10px;
+		-moz-border-radius-topright: 10px;
+		text-align: center;
+		padding: 10px 5px 5px 5px;
+		margin: 0;
+	}
+	.rightBlock .blockContent {
+		background-color: #FFF;
+		border: 1px solid #a1bd1d;
+		padding: 5px;
+	}
+.famousPerson {
+	
+}
+	.famousPerson div {
+		display: inline;
+	}
+	.famousName {
+		font-weight: bold;
+	}
+	.famousInfo {
+		
+	}
+
+#mainContent {
+	margin-left: auto;
+	margin-right: auto;
 }
