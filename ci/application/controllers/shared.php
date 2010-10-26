@@ -9,8 +9,8 @@ class Shared extends Controller {
 		parent::__construct();
 		
 		$this->_jQuery();
-		$this->_css('assets/css/global.css');
 		$this->_css('assets/css/bp.css');
+		$this->_css('assets/css/global.css');
 		
 		$this->load->library('authentication');
 	}

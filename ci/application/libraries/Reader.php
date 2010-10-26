@@ -75,7 +75,7 @@ class Reader {
 					}
 				}
 				$primary_content = strip_tags($primary_content);
-				if ($trained['entityencoded']) {
+				if (@$trained['entityencoded']) {
 					$primary_content = html_entity_decode ($primary_content, ENT_COMPAT, 'UTF-8');
 				}
 				$primary_content = str_replace($this->clean,'.',$primary_content);

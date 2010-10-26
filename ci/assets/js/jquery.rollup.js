@@ -7,6 +7,45 @@
 			var f = context[functionName];
 			return function() { return f.apply(context,arguments); };
 		}
+		,loadUrlAjax: function(href,options) {
+			var $loading = $(options.loading).css('display','');
+			$.post(href,{'ajax': 1},function(data) {
+				$loading.css('display','none');
+				$.displayDataAjax(data,options);
+			},'json');
+		}
+		,displayDataAjax: function(data,options)  {
+			var $target = $(options.target);
+			$target.each(function() {
+				$(this).css('display','').html(data.html);
+				if (typeof options.callback == 'function') {
+					options.callback(this,data);
+				}
+			});
+			var wl = window.location;
+			var root = wl.protocol + '//' + wl.host + wl.pathname;
+			var hash = data.url.replace(root,'');
+			window.location = root + '#' + hash;
+			window.ajaxHash = hash;
+		}
+		,initAjaxListener: function(options) {
+			if (typeof window.ajaxListener == 'undefined') {
+				// it's our job
+				window.ajaxHash = '';
+				window.ajaxListener = function() {
+					var wl = window.location;
+					var hash = wl.hash.replace('#','');
+					if (typeof hash == 'string' && hash != window.ajaxHash) {
+						window.ajaxHash = hash;
+						$.loadUrlAjax(wl.protocol + '//' + wl.host + wl.pathname + hash,options);
+					}
+				}
+				window.ajaxListener();
+				window.setInterval('ajaxListener();',250);
+			} else {
+				// don't do it twice
+			}
+		}
 	});
 	
 	$.fn.setSelectionRange = function(start,end) {
@@ -26,8 +65,20 @@
 		return this;
 	};
 	
+	$.fn.clickAjax = function(options) {
+		$.initAjaxListener(options);
+		this.click(function() {
+			var href = this.href;
+			if (typeof href == 'string') {
+				$.loadUrlAjax(href,options);
+				return false;
+			}
+		});
+		return this;
+	}
+	
 	$.fn.submitAjax = function(options) {
-		var $target = $(options.target);
+		$.initAjaxListener(options);
 		var $loading = $(options.loading);
 		this.each(function() {
 			var $form = $(this);
@@ -40,14 +91,11 @@
 						'url': $form.attr('action'),
 						'type': $form.attr('method'),
 						'data': fdata + '&ajax=1',
-						'dataType': 'html',
+						'dataType': 'json',
 						'success': function(data) {
 							if ($form.serialize() == fdata) {
 								$loading.css('display','none');
-								$target.html(data);
-								if (typeof options.callback == 'function') {
-									options.callback($form,data);
-								}
+								$.displayDataAjax(data,options);
 							}
 						},
 					});

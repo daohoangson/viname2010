@@ -20,10 +20,21 @@ class Search extends Shared {
 		$this->load->view('search/index');
 	}
 	
+	function more($encoded) {
+		$q = $this->unicoder->base64_decode($encoded);
+		define('INTERNAL_QUERY',$q);
+		$this->submit();
+	}
+	
 	function submit() {
 		$this->load->model('Result');
 		
-		$q = $this->unicoder->ucwords(trim($this->input->post('q',true)));
+		if (defined('INTERNAL_QUERY')) {
+			$q = INTERNAL_QUERY;
+			$q = $this->input->xss_clean($q);
+		} else {
+			$q = $this->unicoder->ucwords(trim($this->input->post('q',true)));
+		}
 		if (empty($q)) return false;
 		if ($this->cacheResult) {
 			$existedId = $this->Result->existed($q);
@@ -79,6 +90,11 @@ class Search extends Shared {
 			}
 		}
 		usort($result,array($this,'_resultSort'));
+		
+		$resultMax = 250;
+		if (count($result) > $resultMax) {
+			$result = array_slice($result,0,$resultMax);
+		}
 		
 		$id = $this->Result->save($q,$result,$filters,$this->authentication->getUser('user_id'));
 		$this->_gotoView($id,$q);
@@ -229,26 +245,20 @@ class Search extends Shared {
 	function view($id) {
 		$this->load->model('Result');
 		$data = $this->Result->load($id);
+		$perpage_default = 25;
 		
 		if (!empty($data)) {
 			$args = $this->_args(1);
 			
-			$filters = array();
+			$filters = array('full_name' => array(),'family_name' => array(),'middle_name' => array(),'name' => array(),'gender' => array());
 			$active_filters = array();
 			$result =& $data->result;
 			
 			// get name filters from search result
 			foreach ($data->filters as $filter => $count) {
 				$tmp = $this->_readFilter($filter);
-				$tmp['count'] = $count;
-				if ($count > 0) {
-					$filters['name'][$tmp['key']] = $tmp;
-				}
+				$filters[$tmp['type']][$tmp['key']] = $tmp;
 			}
-			if (!empty($filters['name']) AND count($filters['name']) == 1) {
-				$filters['name'] = array(); // only 1 filter, no reason to display
-			}
-			
 			// process active filter (from url)
 			if (!empty($args['filter'])) {
 				if (!is_array($args['filter'])) {
@@ -256,65 +266,137 @@ class Search extends Shared {
 				}
 				foreach ($args['filter'] as $filter) {
 					$tmp = $this->_readFilter($filter,true);
-
-					foreach (array_keys($result) as $resultkey) {
-						if ($tmp['type'] == 'name') {
-							$words = explode(' ',$result[$resultkey]->full_name);
-							$wordscount = count($words);
-							if ((!empty($tmp['family_name']) AND $this->unicoder->asciiAccent($words[0]) != $tmp['family_name_ascii'])
-								OR (!empty($tmp['middle_name']) AND $wordscount > 1 
-									AND $this->unicoder->asciiAccent($words[$wordscount - 2]) != $tmp['middle_name_ascii'])
-								OR (!empty($tmp['name']) AND $this->unicoder->asciiAccent($words[$wordscount - 1]) != $tmp['name_ascii'])
-							) {
-								unset($result[$resultkey]);
-							}
-						} else if ($tmp['type'] == 'gender') {
-							if ($result[$resultkey]->gender != -1 AND $result[$resultkey]->gender != $tmp['gender']) {
-								unset($result[$resultkey]);
-							}
-						}
-					}
 					$active_filters[$tmp['type']][$tmp['key']] = $tmp;
-					if (!empty($filters[$tmp['type']])) {
-						foreach (array_keys($filters[$tmp['type']]) as $filterkey) {
-							if ($filterkey != $tmp['key']) {
-								unset($filters[$tmp['type']][$filterkey]); // remove other filters in the same type
-							}
-						}
-					}
+					$filters[$tmp['type']][$tmp['key']] = $tmp;
 				}
 				$result = array_values($result);
 			}
+			$family_names = array();
+			$names = array();
+			$gender0 = 0;
+			$gender1 = 0;
+			$gender0a = 0;
+			$gender1a = 0;
+			// $do_names_filters = (count($result) > $perpage_default); // only do names filters if there are more than 1 page left
+			$do_names_filters = true;
 			// add real time filters
-			if (!isset($active_filters['gender'])) {
-				$resultcount = count($result);
-				$genders = array(0,0);
-				foreach ($result as $record) {
-					if ($record->gender == -1) {
-						$genders[0]++;
-						$genders[1]++;
+			foreach (array_keys($result) as $recordkey) {
+				$record =& $result[$recordkey];
+				
+				$words = explode(' ',$record->full_name);
+				$family_name = (count($words) > 1)?($words[0]):('');
+				$family_name_ascii = $this->unicoder->asciiAccent($family_name);
+				$middle_name = (count($words) > 2)?($words[count($words) - 2]):('');
+				$middle_name_ascii = $this->unicoder->asciiAccent($middle_name);
+				$name = $words[count($words) - 1];
+				$name_ascii = $this->unicoder->asciiAccent($name);
+				
+				$ignored = false;
+				$counted = array();
+				foreach ($filters as $filtertype => &$filters_of_type) {
+					foreach ($filters_of_type as $filterkey => &$the_filter) {
+						$is_activated = isset($active_filters[$filtertype][$filterkey]);
+						switch ($filtertype) {
+							case 'family_name':
+							case 'middle_name':
+							case 'name':
+							case 'full_name':
+								if ((empty($the_filter['family_name']) OR $family_name_ascii == $the_filter['family_name_ascii'])
+									AND (empty($the_filter['middle_name']) OR $middle_name_ascii == $the_filter['middle_name_ascii'])
+									AND (empty($the_filter['name']) OR $name_ascii == $the_filter['name_ascii'])) {
+										$the_filter['count']++;
+										$counted[$filterkey] =& $the_filter['count'];
+									} else if ($is_activated) {
+										$ignored = true;
+									}
+								break;
+							case 'gender':
+								if ($record->gender == -1 OR $record->gender == $the_filter['gender']) {
+									$the_filter['count']++;
+									$counted[$filterkey] =& $the_filter['count'];
+								} else if ($is_activated) {
+									$ignored = true;
+								}
+								break;
+						}
+					}
+				}
+				if ($ignored) {
+					foreach ($counted as &$count_ref) {
+						$count_ref--;
+					}
+					unset($result[$recordkey]);
+					continue;
+				}
+				
+				if ($do_names_filters) {
+					if (!isset($names[$name_ascii])) {
+						$names[$name_ascii] = array(
+							'original' => $name,
+							'count' => 1,
+						);
 					} else {
-						$genders[$record->gender]++;
+						$names[$name_ascii]['count']++;
+					}
+					
+					if (!empty($family_name)) {
+						
+						if (!isset($family_names[$family_name_ascii])) {
+							$family_names[$family_name_ascii] = array(
+								'original' => $family_name,
+								'count' => 1,
+							);
+						} else {
+							$family_names[$family_name_ascii]['count']++;
+						}
 					}
 				}
-				if ($genders[0] > 0 AND $genders[1] > 0) {
-					// if found more than 1 gender
-					foreach ($genders as $gender => $count) {
-						$filter = "$gender";
-						$tmp = $this->_readFilter($filter);
-						$tmp['count'] = $count;
-						$filters['gender'][$tmp['key']] = $tmp;
-					}
+				if ($record->gender == -1) {
+					$gender0++;
+					$gender1++;
+				} else if ($record->gender == 1) {
+					$gender1++;
+					$gender1a++;
+				} else {
+					$gender0++;
+					$gender0a++;
 				}
-			} else {
-				$filters['gender'] = $active_filters['gender']; // for displaying
 			}
-			
+			// name filters
+			$countCompareFunction = create_function('$a,$b','return $a["count"] < $b["count"];');
+			usort($names,$countCompareFunction);
+			usort($family_names,$countCompareFunction);
+			for ($i = 0; $i < min(count($names),10); $i++) {
+				$filter = '... ... ' . $names[$i]['original'];
+				$tmp = $this->_readFilter($filter);
+				$tmp['count'] = $names[$i]['count'];
+				$filters[$tmp['type']][$tmp['key']] = $tmp;
+			}
+			for ($i = 0; $i < min(count($family_names),10); $i++) {
+				$filter = $family_names[$i]['original'] . ' ... ...';
+				$tmp = $this->_readFilter($filter);
+				$tmp['count'] = $family_names[$i]['count'];
+				$filters[$tmp['type']][$tmp['key']] = $tmp;
+			}
+			// gender filters
+			if ($gender0*$gender1 > 0 AND ($gender1a > 0 OR $gender0a > 0)) {
+				// there are 2 genders
+				// and must be something absoulte
+				foreach (array(0,1) AS $gender) {
+					$filter = "$gender";
+					$tmp = $this->_readFilter($filter);
+					$tmp['count'] = ${'gender' . $gender};
+					$filters[$tmp['type']][$tmp['key']] = $tmp;
+				}
+			}
+
 			$this->load->library('paginator');
+			$this->load->library('ordering');
 			$this->load->view('search/view',array(
 				'id' => $data->id,
 				'q' => $data->q,
-				'result' => $result,
+				'result' => array_values($result),
+				'perpage_default' => $perpage_default,
 				'filters' => $filters,
 				'active_filters' => $active_filters,
 				'args' => $args,
@@ -332,12 +414,19 @@ class Search extends Shared {
 		if (count($parts) == 3) {
 			// name filter
 			$words = $parts;
-			$tmp['type'] = 'name';
-			if ($words[0] != '...') $tmp['family_name'] = $words[0];
-			if ($words[1] != '...') $tmp['middle_name'] = $words[1];
-			if ($words[2] != '...') $tmp['name'] = $words[2];
+			$tmp['type'] = 'full_name';
+			if ($words[0] != '...') $tmp['family_name'] = $words[0]; else $tmp['family_name'] = '';
+			if ($words[1] != '...') $tmp['middle_name'] = $words[1]; else $tmp['middle_name'] = '';
+			if ($words[2] != '...') $tmp['name'] = $words[2]; else $tmp['name'] = '';
+			$missing = 0; $last = null;
 			foreach (array_keys($tmp) as $key) {
+				if (empty($tmp[$key])) $missing++; else $last = $key;
 				$tmp["{$key}_ascii"] = $this->unicoder->asciiAccent($tmp[$key]);
+			}
+			if ($missing == 2) {
+				// only 1 element present
+				// update filter type
+				$tmp['type'] = $last;
 			}
 		} else if (count($parts) == 1 AND is_numeric($parts[0])) {
 			// gender filter
@@ -349,6 +438,7 @@ class Search extends Shared {
 			$tmp['popularity'] = $parts[0];
 		}
 		$tmp['key'] = $raw?$filter:$this->unicoder->base64_encode($filter);
+		$tmp['count'] = 0;
 		
 		return $tmp;
 	}

@@ -19,7 +19,9 @@ $lang['popularity_high'] = 'Nhiều';
 $lang['popularity_medium'] = 'Bình thường';
 $lang['popularity_low'] = 'Ít gặp';
 $lang['popularity_rare'] = 'Hiếm gặp';
-$lang['popularity_xrare'] = 'Độc';
+$lang['popularity_xrare'] = 'Độc đáo';
+
+$lang['hi'] = 'Xin chào';
 
 /* error/status */
 $lang['updated'] = 'Đã cập nhật';
@@ -28,6 +30,7 @@ $lang['updated'] = 'Đã cập nhật';
 $lang['viewing_page_x_of_y'] = 'Đang xem trang %1$d trên tổng số %2$d';
 $lang['first_page'] = 'Trang đầu';
 $lang['last_page'] = 'Trang cuối';
+$lang['view_more'] = 'Xem thêm';
 
 /* authentication */
 $lang['auth_error_login_missing'] = 'Xin vui lòng nhập tên đăng nhập.';
@@ -51,9 +54,21 @@ $lang['auth_logout'] = 'Thoát';
 
 /* search */
 $lang['search'] = 'Tìm kiếm';
+$lang['enter_names_here'] = 'nhập tên vào đây';
+$lang['search_loading'] = 'đang nạp...';
 $lang['viewing_result_for_x'] = 'Xem kết quả tìm kiếm của "%1$s"';
 $lang['no_result_found'] = 'Không tìm thấy kết quả nào :(';
 $lang['search_too_old'] = 'Yêu cầu tìm kiếm đã bị hủy (do quá cũ?).';
 $lang['search_filter_active'] = '[Bộ lọc được kích hoạt]';
+
+/* Name - Family */
+$lang['some_names'] = 'Một vài sự kết hợp';
+
+/* Blocks */
+$lang['block_famous'] = 'Người nổi tiếng';
+$lang['block_same_family'] = 'Tên hay';
+
+$lang['aboutus'] = 'Giới thiệu';
+$lang['tos'] = 'Điều khoản sử dụng';
 
 ?>

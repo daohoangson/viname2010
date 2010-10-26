@@ -112,6 +112,7 @@ class Authentication {
 	function logout() {
 		$this->ci->session->set_userdata(array('user_id' => 0));
 		$this->ci->session->sess_destroy();
+		delete_cookie(AUTH_COOKIE_NAME);
 	}
 	
 	function isLoggedIn() {
@@ -125,9 +126,12 @@ class Authentication {
 				if (isset($data['user_id'])) {
 					$user = $this->ci->User->only(array('user_id' => $data['user_id']));
 					if (!empty($user)) {
-						if ($data['password'] == md5($user->password . $this->cookieHash())) {
-							$this->ci->session->set_userdata(get_object_vars($user));
+						if ($data['password'] != md5($user->password . $this->cookieHash())) {
+							delete_cookie(AUTH_COOKIE_NAME);
+							return false;
 						}
+						// save user info
+						$this->ci->session->set_userdata(get_object_vars($user));
 						// renew cookie
 						set_cookie(array(
 							'name' => AUTH_COOKIE_NAME,
@@ -160,7 +164,7 @@ class Authentication {
 	}
 	
 	private function cookieHash() {
-		return md5($this->ci->session->userdata('session_id'));
+		return 'something about browser should be placed here (useragent?)';
 	}
 }
 

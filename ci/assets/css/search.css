@@ -1,29 +1,76 @@
-#searcher table {
-	width: auto;
-	margin-left: auto;
-	margin-right: auto;
+#searcher {
+	background-color: #a1bd1d;
 }
-#searcher input {
-	font-size: 35px;
-}
-.search_box {
-	font-size: 35px;
-	width: 600px;
-}
+	#searcher table {
+		width: auto;
+		margin: 0 auto;
+	}
+	#searcher input {
+		font-size: 35px;
+	}
+	.searchBox {
+		width: 600px;
+	}
 #resultsLoading {
 	text-align: center;
 }
-#results li {
-	list-style: none;
-	display: table;
-	table-layout: fixed;
-	width: 100%;
+#resultsViewer {
 }
-.search_header {
-	font-weight: bold;
+	.filtersContainer {
+		line-height: 2.5em;
+	}
+		.filtersContainer li {
+			display: block;
+			float: left;
+			list-style: none;
+		}
+		.filters {
+			margin: 0;
+			padding: 0;
+		}
+		.filter {
+			margin-right: 10px;
+		}
+		.filter a {
+			border-radius: 0.7em;
+			-moz-border-radius: 0.7em;
+			padding: 0.4em;
+			background-color: #EEE;
+			color: #000;
+			text-decoration: none;
+		}
+		.filter a:hover {
+			background-color: #CCC;
+			color: #FFF;
+		}
+		.filterActivated a {
+			background-color: #999;
+			color: #FFF;
+			font-weight: bold;
+		}
+		.filterCount {
+			margin: 0 5px;
+		}
+	.resultsContainer {
+		margin: 10px 0;
+	}
+		.resultsContainer li {
+			list-style: none;
+		}
+		.resultsHeader {
+			font-weight: bold;
+			color: #c73118;
+		}
+		.resultsHeader a {
+			color: #c73118;
+		}
+#results {
+	padding: 0;
 }
-.search_result div {
-	display: table-cell;
-	vertical-align: middle;
-	width: auto;
-}
+	#results li {
+		width: 100%;
+	}
+	#results li div {
+		padding-left: 5px;
+		border-left: 1px solid #DDD;
+	}
